@@ -25,27 +25,26 @@ pub fn build(b: *std.Build) !void {
         .imports = &.{ .{ .name = "buffer", .module = modules.get("buffer").? }, .{ .name = "metrics", .module = modules.get("metrics").? } },
     });
 
-    var openssl = false;
-    const openssl_lib_name = b.option([]const u8, "openssl_lib_name", "");
-    const openssl_lib_path = b.option(std.Build.LazyPath, "openssl_lib_path", "");
-    const openssl_include_path = b.option(std.Build.LazyPath, "openssl_include_path", "");
+    const openssl = false;
+    // const openssl_lib_name = b.option([]const u8, "openssl_lib_name", "");
+    // const openssl_lib_path = b.option(std.Build.LazyPath, "openssl_lib_path", "");
+    // const openssl_include_path = b.option(std.Build.LazyPath, "openssl_include_path", "");
 
-    if (openssl_include_path) |p| {
-        openssl = true;
-        pg_module.addIncludePath(p);
-    }
-    if (openssl_lib_path) |p| {
-        openssl = true;
-        pg_module.addLibraryPath(p);
-    }
-    if (openssl_lib_name != null) {
-        openssl = true;
-    }
-
-    if (openssl) {
-        pg_module.linkSystemLibrary("crypto", .{});
-        pg_module.linkSystemLibrary(openssl_lib_name orelse "ssl", .{});
-    }
+    // if (openssl_include_path) |p| {
+    //     openssl = true;
+    //     pg_module.addIncludePath(p);
+    // }
+    // if (openssl_lib_path) |p| {
+    //     openssl = true;
+    //     pg_module.addLibraryPath(p);
+    // }
+    // if (openssl_lib_name != null) {
+    //     openssl = true;
+    // }
+    //
+    // if (openssl) {
+    //     pg_module.linkSystemLibrary("crypto", .{});
+    //     pg_module.linkSystemLibrary(openssl_lib_name orelse "ssl", .{});
 
     {
         const options = b.addOptions();
@@ -62,8 +61,8 @@ pub fn build(b: *std.Build) !void {
             .test_runner = b.path("test_runner.zig"),
         });
         addLibs(lib_test, modules);
-        lib_test.addLibraryPath(std.Build.LazyPath{.cwd_relative = "/opt/openssl/lib"});
-        lib_test.addIncludePath(std.Build.LazyPath{.cwd_relative = "/opt/openssl/include"});
+        lib_test.addLibraryPath(std.Build.LazyPath{ .cwd_relative = "/opt/openssl/lib" });
+        lib_test.addIncludePath(std.Build.LazyPath{ .cwd_relative = "/opt/openssl/include" });
         lib_test.linkSystemLibrary("crypto");
         lib_test.linkSystemLibrary("ssl");
 
